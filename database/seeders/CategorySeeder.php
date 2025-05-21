@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CategorySeeder extends Seeder
 {
@@ -15,34 +15,34 @@ class CategorySeeder extends Seeder
         DB::table('categories')->insert([
             [
                 'category_name' => 'Action',
-                'descrption' => 'Film dengan adegan-adegan penuh aksi dan ketegangan',
+                'description' => 'Film dengan adegan-adegan penuh aksi dan ketegangan',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'category_name' => 'Comedy',
-                'descrption' => 'Film dengan adegan-adegan penuh menghibur dan mengundang tawa',
+                'description' => 'Film dengan adegan-adegan menghibur dan mengundang tawa',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'category_name' => 'Drama',
-                'descrption' => 'Film yang berfokus pada pegembangan karakter dan konflik emoi',
+                'description' => 'Film yang berfokus pada pengembangan karakter dan konflik emosional',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'category_name' => 'Sci-Fi',
-                'descrption' => 'Film dengan latar belakang ilmiah dan teknologi futuristik',
+                'description' => 'Film dengan latar belakang ilmiah dan teknologi futuristik',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'category_name' => 'Romance',
-                'descrption' => 'Film yang berpusat pada kisah cinta dan hubungan romantis',
+                'description' => 'Film yang berpusat pada kisah cinta dan hubungan romantis',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
         ]);
-        }   
+    }
 }
