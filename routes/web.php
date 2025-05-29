@@ -11,7 +11,7 @@ Route::get('/', function () {
 
 Route::get('/', [MovieController::class, 'index']);
 
-Route::get('/movie/{id}/{slug}', [MovieController::class, 'detail_movie']);
+Route::get('/movie/{id}/{slug}', [MovieController::class, 'movie_detail']);
 
 Route::get('/movie/create', [MovieController::class, 'create'])->middleware('auth');
 
@@ -20,6 +20,3 @@ Route::Post('/movie/store',[MovieController::class,'store'])->middleware('auth')
 Route::get('/login', [AuthController::class,'formLogin'])->name('login');
 
 Route::post('/login', [AuthController::class,'login']);
-
-
-Route::get('/movies/{id}', [MovieController::class, 'show'])->name('movies.show');
