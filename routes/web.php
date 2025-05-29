@@ -11,12 +11,13 @@ Route::get('/', function () {
 
 Route::get('/', [MovieController::class, 'index']);
 
-Route::get('/movie/{id}/{slug}', [MovieController::class, 'movie_detail']);
+Route::get('/movies/{id}', [MovieController::class, 'show'])->name('movies.show');
 
-Route::get('/movie/create', [MovieController::class, 'create'])->middleware('auth');
-
-Route::Post('/movie/store',[MovieController::class,'store'])->middleware('auth');
+Route::get('/movie/create', [MovieController::class, 'create'])->middleware('movie.create');
+Route::Post('/movie',[MovieController::class,'store'])->middleware('movie.store');
+Route::Post('/',[MovieController::class,'index'])->middleware('homepage');
 
 Route::get('/login', [AuthController::class,'formLogin'])->name('login');
 
 Route::post('/login', [AuthController::class,'login']);
+Route::post('/logout',[AuthController::class, 'destory'])->name('logout');

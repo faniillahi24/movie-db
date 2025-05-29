@@ -11,21 +11,27 @@ class AuthController extends Controller
     {
         return view('login');
     }
-
     public function login(Request $request)
     {
-        $credential = $request->validate([
+        $credentials = $request->validate([
             'email' => ['required', 'email'],
-            'password' => ['required']
+            'password' => ['required'],
         ]);
-
-        if (Auth::attempt($credential)){
+        if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended('/');
         }
-
         return back()->withErrors([
-            'email' => 'Email atau password salah!'
+            'email' => 'Email tidak terdaftar',
         ])->onlyInput('email');
+    }
+    public function destroy(Request $request)
+    {
+        Auth::logout(); // keluarin user
+
+        $request->session()->invalidate(); // hancurkan session lama
+        $request->session()->regenerateToken(); // bikin token CSRF baru
+
+        return redirect('/login'); // arahkan ke login
     }
 }
