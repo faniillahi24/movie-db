@@ -2,107 +2,108 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Movie;
-use Illuminate\Http\Request;
+use App\Models\categories;
 use Illuminate\Support\Str;
- 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+
 class MovieController extends Controller
 {
-    // Tampilkan daftar movie dengan pagination
     public function index()
     {
-        $movies = Movie::with('category')->paginate(6);
-
-        return view('homepage', [
-            'movies'      => $movies,
-            'currentPage' => $movies->currentPage(),
-            'lastPage'    => $movies->lastPage(),
-        ]);
+        $movies = Movie::latest()->paginate(6);
+        return view('pages.home', compact('movies'));
     }
 
-    // Form untuk buat movie baru
-    public function create()
-    {
-        $categories = Category::all();
-        return view('movie_form', compact('categories'));
+    public function detailMovie($id, $slug){
+        $movie = Movie::find($id);
+        return view('pages.detail_movie', compact('movie'));
     }
 
-    // Simpan movie baru ke database
+    public function create(){
+        $categories = categories::all();
+        return view('pages.movie_form');
+    } 
+
     public function store(Request $request)
     {
-        // validasi input
-        $data = $request->validate([
-            'title'       => 'required|string|max:255',
-            'synopsis'    => 'required|string',
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'synopsis' => 'required|string',
+            'year' => 'required|integer|min:1800|max:' . date('Y'),
             'category_id' => 'required|exists:categories,id',
-            'year'        => 'required|integer|min:1900|max:'.date('Y'),
-            'actors'      => 'required|string',
-            'cover_image' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'actor' => 'nullable|string|max:255',
+        ]);
+    
+        // Simpan file gambar
+        $imagePath = $request->file('cover_image')->store('cover_images', 'public');
+    
+        // Simpan data ke database
+        Movie::create([
+            'title' => $validated['title'],
+            'cover_image' => $imagePath,
+            'slug' => Str::slug($validated['title']),
+            'synopsis' => $validated['synopsis'],
+            'year' => $validated['year'],
+            'category_id' => $validated['category_id'],
+            'actor' => $validated['actor'],
+        ]);
+    
+        return redirect('/')->with('success', 'Movie has been added!');
+    }
+
+    public function list()
+    {
+        $movies = Movie::paginate(10);
+        return view('pages.list_movie', compact('movies'));
+    }
+    
+    public function edit($id)
+    {
+        $movies = Movie::findorfail($id);
+        return view('pages.edit_movie', compact('movies'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        
+        $movies = Movie::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'synopsis' => 'required|string',
+            'year' => 'required|integer|min:1800|max:' . date('Y'),
+            'category_id' => 'required|exists:categories,id',
+            'actor' => 'nullable|string|max:255',
         ]);
 
-        // upload file cover_image ke storage/app/public/cover_images
-        $path = $request->file('cover_image')->store('cover_images', 'public');
-        $data['cover_image'] = '/storage/'.$path;
+        if ($request->file('cover_image')) {
+            $imagePath = $request->file('cover_image')->store('cover_images', 'public');
+            $movies->cover_image = $imagePath;
+        }
 
-        // generate slug dari title
-        $data['slug'] = Str::slug($data['title']);
-
-        // simpan ke table movies
-        Movie::create($data);
-
-        return redirect()->route('homepage')
-                         ->with('success', 'Movie berhasil disimpan!');
+        $movies->update([
+            'title' => $validated['title'],
+            'slug' => Str::slug($validated['title']),
+            'synopsis' => $validated['synopsis'],
+            'year' => $validated['year'],
+            'category_id' => $validated['category_id'],
+            'actor' => $validated['actor'],
+        ]);
+        return redirect('/list')->with('success', 'berhasil mengupdate data movie');
     }
 
-    // Detail satu movie
-    public function show($id)
+    public function destroy($id)
     {
-        $movie = Movie::with('category')->findOrFail($id);
-        return view('movie_detail', compact('movie'));
+        if(Gate::allows('delete')){
+
+            $data = Movie::findorfail($id);
+            $data->delete();
+            return redirect()->back()->with('success', 'data berhasil di hapus');
+        }
+
     }
-
- public function edit($id)
-{
-    $movie = Movie::findOrFail($id);
-    $categories = Category::all();
-
-    return view('edit', compact('movie', 'categories'));
-}
-
-
-public function destroy($id)
-{
-    $movie = Movie::findOrFail($id);
-    $movie->delete();
-
-    return redirect()->route('homepage')->with('success', 'Movie deleted successfully!');
-}
-
-public function update(Request $request, $id)
-{
-    $movie = Movie::findOrFail($id);
-
-    $data = $request->validate([
-        'title'       => 'required|string|max:255',
-        'synopsis'    => 'required|string',
-        'category_id' => 'required|exists:categories,id',
-        'year'        => 'required|integer|min:1900|max:'.date('Y'),
-        'actors'      => 'required|string',
-        'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
-
-    if ($request->hasFile('cover_image')) {
-        $path = $request->file('cover_image')->store('cover_images', 'public');
-        $data['cover_image'] = '/storage/'.$path;
-    }
-
-    $data['slug'] = Str::slug($data['title']);
-
-    $movie->update($data);
-
-    return redirect()->route('movies.show', $movie->id)
-                     ->with('success', 'Movie updated successfully!');
-}
-
 }

@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class CategorySeeder extends Seeder
+class CategoriesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -14,35 +15,35 @@ class CategorySeeder extends Seeder
     {
         DB::table('categories')->insert([
             [
-                'category_name' => 'Action',
-                'description' => 'Film dengan adegan-adegan penuh aksi dan ketegangan',
-                'created_at' => now(),
-                'updated_at' => now(),
+            'category_name' => 'Action',
+            'description' => 'Action movies',
+            'created_at' => now(),
+            'updated_at' => now(),
             ],
             [
                 'category_name' => 'Comedy',
-                'description' => 'Film dengan adegan-adegan menghibur dan mengundang tawa',
+                'description' => 'film lucu yang penuh dengan kekocakan',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'category_name' => 'Drama',
-                'description' => 'Film yang berfokus pada pengembangan karakter dan konflik emosional',
+                'description' => 'film yang menceritakan tentang kehidupan manusia',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'category_name' => 'Sci-Fi',
-                'description' => 'Film dengan latar belakang ilmiah dan teknologi futuristik',
+                'description' => 'film yang menceritakan tentang dunia yang tak terlihat oleh mata manusia',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'category_name' => 'Romance',
-                'description' => 'Film yang berpusat pada kisah cinta dan hubungan romantis',
+                'description' => 'film yang menceritakan tentang cinta',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
+                ],
         ]);
     }
 }
