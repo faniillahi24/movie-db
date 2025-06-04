@@ -61,4 +61,48 @@ class MovieController extends Controller
         $movie = Movie::with('category')->findOrFail($id);
         return view('movie_detail', compact('movie'));
     }
+
+ public function edit($id)
+{
+    $movie = Movie::findOrFail($id);
+    $categories = Category::all();
+
+    return view('edit', compact('movie', 'categories'));
+}
+
+
+public function destroy($id)
+{
+    $movie = Movie::findOrFail($id);
+    $movie->delete();
+
+    return redirect()->route('homepage')->with('success', 'Movie deleted successfully!');
+}
+
+public function update(Request $request, $id)
+{
+    $movie = Movie::findOrFail($id);
+
+    $data = $request->validate([
+        'title'       => 'required|string|max:255',
+        'synopsis'    => 'required|string',
+        'category_id' => 'required|exists:categories,id',
+        'year'        => 'required|integer|min:1900|max:'.date('Y'),
+        'actors'      => 'required|string',
+        'cover_image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
+
+    if ($request->hasFile('cover_image')) {
+        $path = $request->file('cover_image')->store('cover_images', 'public');
+        $data['cover_image'] = '/storage/'.$path;
+    }
+
+    $data['slug'] = Str::slug($data['title']);
+
+    $movie->update($data);
+
+    return redirect()->route('movies.show', $movie->id)
+                     ->with('success', 'Movie updated successfully!');
+}
+
 }

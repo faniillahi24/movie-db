@@ -54,8 +54,8 @@
     </main>
 
     <footer class="bg-success text-white text-center py-3 mt-4">
-        <small>&copy; {{ date('Y') }} by Deri Agusman</small>
-    </footer>
+    <small>&copy; {{ date('Y') }} by Fani Illahi</small>
+</footer>
 </body>
 
 </html>

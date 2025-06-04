@@ -20,4 +20,13 @@ Route::Post('/',[MovieController::class,'index'])->name('homepage');
 Route::get('/login', [AuthController::class,'formLogin'])->name('login');
 
 Route::post('/login', [AuthController::class,'login']);
-Route::post('/logout',[AuthController::class, 'destory'])->name('logout');
+Route::post('/logout',[AuthController::class, 'destroy'])->name('logout');
+
+Route::get('/movies/create', [MovieController::class, 'create'])->name('movies.create');
+Route::post('/movies', [MovieController::class, 'store'])->name('movies.store');
+
+
+Route::get('/movies/{id}/edit', [MovieController::class, 'edit'])->name('movies.edit');
+Route::delete('/movies/{id}', [MovieController::class, 'destroy'])->name('movies.destroy');
+
+Route::put('/movies/{id}', [MovieController::class, 'update'])->name('movies.update');
