@@ -10,11 +10,19 @@ use Illuminate\Support\Facades\Gate;
 
 class MovieController extends Controller
 {
-    public function index()
-    {
-        $movies = Movie::latest()->paginate(6);
-        return view('pages.home', compact('movies'));
-    }
+    public function index(Request $request)
+{
+    $search = $request->input('search');
+
+    $movies = Movie::query()
+        ->when($search, function ($query, $search) {
+            return $query->where('title', 'like', '%' . $search . '%');
+        })
+        ->latest()
+        ->paginate(6);
+
+    return view('pages.home', compact('movies', 'search'));
+}
 
     public function detailMovie($id, $slug){
         $movie = Movie::find($id);

@@ -47,10 +47,10 @@
                         </li>
                         @endauth
                     </ul>
-                    <form class="d-flex" role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search">
-                        <button class="btn btn-outline-light" type="submit">Search</button>
-                    </form>
+                    <form class="d-flex" role="search" method="GET" action="{{ url('/') }}">
+    <input class="form-control me-2" type="search" name="search" placeholder="Search judul..." value="{{ request('search') }}">
+    <button class="btn btn-outline-light" type="submit">Search</button>
+</form>
                     @auth
                         <div class="ms-3">
                             <form method="POST" action="{{ route('logout') }}">
