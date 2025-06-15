@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Movie;
-use App\Models\categories;
+use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -30,7 +30,7 @@ class MovieController extends Controller
     }
 
     public function create(){
-        $categories = categories::all();
+        $categories = Category::all();
         return view('pages.movie_form');
     } 
 
